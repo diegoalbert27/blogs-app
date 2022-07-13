@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "NODE_ENV=production node index.js",
     "lint": "npx standard",
     "lint:fix": "npx standard --fix",
-    "dev": "nodemon index.js",
-    "test": "jest --verbose"
+    "dev": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test jest --verbose --runInBand"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +23,8 @@
   "devDependencies": {
     "jest": "^28.1.2",
     "nodemon": "^2.0.19",
-    "standard": "^17.0.0"
+    "standard": "^17.0.0",
+    "supertest": "^6.2.4"
   },
   "eslintConfig": {
     "extends": "./node_modules/standard/eslintrc.json",
