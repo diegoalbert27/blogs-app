@@ -7,7 +7,8 @@ const mongoose = require('mongoose')
 const logger = require('./utils/logger')
 const blogsRouter = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
-const { errorHandler, unknownEndpoint } = require('./utils/middleware')
+const loginRouter = require('./controllers/login')
+const { errorHandler, unknownEndpoint, tokenExtractor } = require('./utils/middleware')
 
 mongoose.connect(config.MONGODB_URI)
   .then(() => {
@@ -21,14 +22,17 @@ app.use(cors())
 app.use(express.json())
 
 morgan.token('body', req => {
-  const { name, number } = req.body
-  return JSON.stringify({ name, number })
+  const body = req.body
+  return JSON.stringify(body)
 })
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-app.use('/api/blogs', blogsRouter)
+app.use('/api/login', loginRouter)
+
+app.use(tokenExtractor)
 app.use('/api/users', usersRouter)
+app.use('/api/blogs', blogsRouter)
 
 app.use(errorHandler)
 app.use(unknownEndpoint)
