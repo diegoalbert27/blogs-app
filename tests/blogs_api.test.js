@@ -37,17 +37,9 @@ beforeEach(async () => {
 })
 
 describe('when there is initially some blogs saved', () => {
-  test('return 401 if assign a token validator', async () => {
-    await api
-      .get('/api/blogs')
-      .expect(401)
-      .expect('Content-Type', /application\/json/)
-  })
-
   test('blogs are returned as json', async () => {
     await api
       .get('/api/blogs')
-      .set({ Authorization: token, Accept: 'application/json' })
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
@@ -55,14 +47,12 @@ describe('when there is initially some blogs saved', () => {
   test('id as identifier for the blogs', async () => {
     const response = await api
       .get('/api/blogs')
-      .set({ Authorization: token, Accept: 'application/json' })
     expect(response.body[0].id).toBeDefined()
   })
 
   test('user for the blogs', async () => {
     const response = await api
       .get('/api/blogs')
-      .set({ Authorization: token, Accept: 'application/json' })
     expect(response.body[0].user).toBeDefined()
   })
 })
@@ -126,20 +116,6 @@ describe('addition of a new blog', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
   })
-
-  test('check if user properties are missing', async () => {
-    const newBlog = {
-      title: 'Canonical string reduction',
-      author: 'Edsger W. Dijkstra',
-      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html'
-    }
-    await api
-      .post('/api/blogs')
-      .set({ Authorization: token, Accept: 'application/json' })
-      .send(newBlog)
-      .expect(400)
-      .expect('Content-Type', /application\/json/)
-  })
 })
 
 describe('deletion of a blog', () => {
@@ -164,8 +140,8 @@ describe('deletion of a blog', () => {
   })
 })
 
-describe('upteding of a blog', () => {
-  test('succeeds updating blog if id is valid', async () => {
+describe('updating of a blog', () => {
+  test('success updating blog if id is valid', async () => {
     const users = await User.find({})
     const blogsAtStart = await Blog.find({})
     const blogToUpdate = blogsAtStart[0]
@@ -197,13 +173,11 @@ describe('upteding of a blog', () => {
       title: 'Diseño guiado por el dominio',
       author: 'Wikipedia',
       url: 'https://es.wikipedia.org/wiki/Dise%C3%B1o_guiado_por_el_dominio',
-      likes: 12,
-      user: '62d4c3e178bb07603f00fdf4'
+      likes: 12
     }
 
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
-      .set({ Authorization: token, Accept: 'application/json' })
       .send(updateBlog)
       .expect(401)
 
